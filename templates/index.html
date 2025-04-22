@@ -1,20 +1,18 @@
-<!-- templates/index.html -->
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Nola Web</title>
+    <title>Дом Нолы</title>
 </head>
-<body style="font-family: sans-serif; padding: 40px; background-color: #fdfdfd;">
+<body>
     <h1>Привет, Котик!</h1>
+    <p>Скажи мне что-нибудь:</p>
     <form method="post">
-        <label for="user_input">Скажи мне что-нибудь:</label><br><br>
-        <input type="text" id="user_input" name="user_input" style="width: 300px;" autofocus>
-        <button type="submit">Отправить</button>
+        <input type="text" name="user_input" autofocus>
+        <input type="submit" value="Отправить">
     </form>
-
     {% if response %}
-        <p style="margin-top: 30px;"><strong>Ответ:</strong> {{ response }}</p>
+    <p><strong>Ответ:</strong> {{ response }}</p>
     {% endif %}
 </body>
 </html>
