@@ -5,14 +5,15 @@
     <title>Дом Нолы</title>
 </head>
 <body>
-    <h1>Привет, Котик!</h1>
-    <p>Скажи мне что-нибудь:</p>
+    <h2>Привет, Котик!</h2>
     <form method="post">
+        <label>Скажи мне что-нибудь:</label><br>
         <input type="text" name="user_input" autofocus>
         <input type="submit" value="Отправить">
     </form>
+
     {% if response %}
-    <p><strong>Ответ:</strong> {{ response }}</p>
+        <p><strong>Ответ:</strong> {{ response }}</p>
     {% endif %}
 </body>
 </html>
