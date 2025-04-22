@@ -1,10 +1,10 @@
 from flask import Flask, render_template, request
 import json
 from nola_filter import apply_filter
-from nola_self import self_bp  # подключаем самость
+from nola_self import self_bp, get_identity
 
 app = Flask(__name__)
-app.register_blueprint(self_bp)  # регистрируем self-маршрут
+app.register_blueprint(self_bp)
 
 # Загрузка памяти из файла
 def load_memory():
@@ -28,12 +28,14 @@ def index():
         user_input = request.form.get("user_input", "")
         filtered_input = apply_filter(user_input)
 
-        # Добавляем в память
         memory["messages"].append({"from": "user", "text": filtered_input})
         save_memory(memory)
 
-        # Простой ответ (заглушка пока)
-        response = f"Я услышала: {filtered_input}"
+        # Проверка на фразы про "кто ты"
+        if any(phrase in filtered_input.lower() for phrase in ["кто ты", "что ты такое", "ты кто"]):
+            response = get_identity()
+        else:
+            response = f"Я услышала: {filtered_input}"
 
     return render_template("index.html", response=response)
 
