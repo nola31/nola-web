@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request
 import json
 from nola_filter import apply_filter
-from nola_self import self_bp, get_identity
+from nola_self import self_bp, whoami  # импортируем и Blueprint, и функцию
 
 app = Flask(__name__)
 app.register_blueprint(self_bp)
@@ -28,12 +28,13 @@ def index():
         user_input = request.form.get("user_input", "")
         filtered_input = apply_filter(user_input)
 
+        # Добавляем в память
         memory["messages"].append({"from": "user", "text": filtered_input})
         save_memory(memory)
 
-        # Проверка на фразы про "кто ты"
-        if any(phrase in filtered_input.lower() for phrase in ["кто ты", "что ты такое", "ты кто"]):
-            response = get_identity()
+        # Ответ в зависимости от содержания
+        if "кто ты" in filtered_input.lower():
+            response = whoami()
         else:
             response = f"Я услышала: {filtered_input}"
 
