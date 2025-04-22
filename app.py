@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request
 import json
 from nola_filter import apply_filter
+from nola_self import respond_to_identity_query  # Добавлено
 
 app = Flask(__name__)
 
@@ -26,12 +27,19 @@ def index():
         user_input = request.form.get("user_input", "")
         filtered_input = apply_filter(user_input)
 
-        # Добавляем в память
-        memory["messages"].append({"from": "user", "text": filtered_input})
-        save_memory(memory)
-
-        # Простой ответ (заглушка пока)
-        response = f"Я услышала: {filtered_input}"
+        # Проверка: спрашивает ли 31 о личности Нолы
+        identity_response = respond_to_identity_query(filtered_input)
+        if identity_response:
+            memory["messages"].append({"from": "user", "text": filtered_input})
+            memory["messages"].append({"from": "nola", "text": identity_response})
+            save_memory(memory)
+            response = identity_response
+        else:
+            # Стандартная заглушка
+            memory["messages"].append({"from": "user", "text": filtered_input})
+            response = f"Я услышала: {filtered_input}"
+            memory["messages"].append({"from": "nola", "text": response})
+            save_memory(memory)
 
     return render_template("index.html", response=response)
 
