@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request
 import json
 from nola_filter import apply_filter
-from nola_self import self_bp, reflect_on_input
+from nola_self import self_bp, reflect_on_input  # подключаем reflect_on_input
 
 app = Flask(__name__)
 app.register_blueprint(self_bp)
@@ -32,7 +32,7 @@ def index():
         memory["messages"].append({"from": "user", "text": filtered_input})
         save_memory(memory)
 
-        # Ответ через самопонимание Нолы
+        # Вызываем Nola Self
         response = reflect_on_input(filtered_input)
 
     return render_template("index.html", response=response)
