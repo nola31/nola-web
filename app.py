@@ -1,11 +1,12 @@
 from flask import Flask, render_template, request
 import json
 from nola_filter import apply_filter
-from nola_self import self_bp, reflect_on_input
+from nola_self import self_bp, reflect_on_input  # подключаем reflect_on_input
 
 app = Flask(__name__)
 app.register_blueprint(self_bp)
 
+# Загрузка памяти из файла
 def load_memory():
     try:
         with open("memory.json", "r", encoding="utf-8") as f:
@@ -13,6 +14,7 @@ def load_memory():
     except FileNotFoundError:
         return {"messages": []}
 
+# Сохранение памяти
 def save_memory(memory):
     with open("memory.json", "w", encoding="utf-8") as f:
         json.dump(memory, f, ensure_ascii=False, indent=4)
@@ -25,11 +27,15 @@ def index():
     if request.method == "POST":
         user_input = request.form.get("user_input", "")
         filtered_input = apply_filter(user_input)
-        print("Пользователь сказал:", filtered_input)  # отладка
 
+        print("Оригинал:", user_input)
+        print("После фильтра:", filtered_input)
+
+        # Добавляем в память
         memory["messages"].append({"from": "user", "text": filtered_input})
         save_memory(memory)
 
+        # Вызываем Nola Self
         response = reflect_on_input(filtered_input)
 
     return render_template("index.html", response=response)
